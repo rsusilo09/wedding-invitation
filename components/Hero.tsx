@@ -1,5 +1,7 @@
 "use client";
 
+import couple from "@/lib/constants/couple";
+
 export default function Hero({ guestName }: { guestName: string }) {
   return (
     <section className="min-h-screen h-auto flex items-center justify-center text-white relative overflow-hidden">
@@ -23,7 +25,7 @@ export default function Hero({ guestName }: { guestName: string }) {
         </p>
 
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-[var(--font-script)] leading-tight mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-          Reinaldo & Eunike
+          {couple.brideName} <span className="mx-2 text-zinc-400">&</span> <span className="text-pink-600">{couple.groomName}</span>
         </h1>
 
         <p className="italic text-base sm:text-lg md:text-xl opacity-90">

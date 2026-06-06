@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import couple from "@/lib/constants/couple";
 
 export type CoupleIntroProps = {
   brideName?: string;
@@ -9,16 +10,20 @@ export type CoupleIntroProps = {
   location?: string;
   brideImg?: string;
   groomImg?: string;
+  brideInstagram?: string;
+  groomInstagram?: string;
   className?: string;
 };
 
 export default function CoupleIntro({
-  brideName = "Nama Mempelai Wanita",
-  groomName = "Nama Mempelai Pria",
-  date,
-  location,
-  brideImg,
-  groomImg,
+  brideName = couple.brideName,
+  groomName = couple.groomName,
+  date = couple.date,
+  location = couple.location,
+  brideImg = couple.brideImg,
+  groomImg = couple.groomImg,
+  brideInstagram = couple.brideInstagram,
+  groomInstagram = couple.groomInstagram,
   className = "",
 }: CoupleIntroProps) {
   return (
@@ -43,7 +48,16 @@ export default function CoupleIntro({
                 <div className="flex h-full w-full items-center justify-center text-zinc-400">Photo</div>
               )}
             </div>
-            <p className="mt-4 text-lg font-medium text-zinc-900">{brideName}</p>
+            <p className="mt-4 text-lg font-medium text-zinc-900">
+              <a
+                href={brideInstagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-600 hover:underline"
+              >
+                {brideName}
+              </a>
+            </p>
             <p className="text-sm text-zinc-600">Bride</p>
           </div>
 
@@ -55,7 +69,16 @@ export default function CoupleIntro({
                 <div className="flex h-full w-full items-center justify-center text-zinc-400">Photo</div>
               )}
             </div>
-            <p className="mt-4 text-lg font-medium text-zinc-900">{groomName}</p>
+            <p className="mt-4 text-lg font-medium text-zinc-900">
+              <a
+                href={groomInstagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-600 hover:underline"
+              >
+                {groomName}
+              </a>
+            </p>
             <p className="text-sm text-zinc-600">Groom</p>
           </div>
         </div>
