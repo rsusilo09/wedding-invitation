@@ -67,8 +67,8 @@ export default function Wishes({ guestName }: { guestName: string }) {
   return (
     <section className="bg-gradient-to-b from-rose-50 via-white to-zinc-50 px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-6xl rounded-[3rem] border border-zinc-200 bg-white/95 p-8 shadow-[0_40px_120px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-10">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start">
-          <div>
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
+          <div className="flex flex-col">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-pink-100 px-4 py-2 text-sm font-semibold text-pink-700">
               <span className="h-2.5 w-2.5 rounded-full bg-pink-600" />
               Baru! Kirim pesan doamu
@@ -80,8 +80,8 @@ export default function Wishes({ guestName }: { guestName: string }) {
               Isi pesanmu untuk pengantin agar mereka merasa lebih dekat dan dikelilingi doa dari keluarga serta sahabat.
             </p>
 
-            <div className="mt-10 rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-sm">
-              <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="mt-10 rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-sm flex flex-col flex-1">
+              <form onSubmit={handleSubmit} className="space-y-5 flex flex-col flex-1">
                 <div>
                   <label className="text-sm font-semibold text-zinc-900" htmlFor="wish-message">
                     Pesanmu untuk pengantin
@@ -103,14 +103,15 @@ export default function Wishes({ guestName }: { guestName: string }) {
                 >
                   {submitting ? "Mengirim..." : "Kirim Pesan"}
                 </button>
-
-                {success && <p className="text-sm text-emerald-700">{success}</p>}
-                {error && <p className="text-sm text-rose-700">{error}</p>}
+                <div className="mt-auto">
+                  {success && <p className="text-sm text-emerald-700">{success}</p>}
+                  {error && <p className="text-sm text-rose-700">{error}</p>}
+                </div>
               </form>
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col h-full">
             <div className="flex items-center justify-between gap-4 rounded-[1.75rem] border border-zinc-200 bg-white p-5 shadow-sm">
               <div>
                 <p className="text-sm uppercase tracking-[0.25em] text-zinc-500">Tercatat</p>
@@ -121,7 +122,7 @@ export default function Wishes({ guestName }: { guestName: string }) {
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 flex-1 overflow-y-auto space-y-5 pr-2">
               {loading ? (
                 <div className="space-y-4">
                   {Array.from({ length: 3 }).map((_, index) => (
@@ -133,7 +134,7 @@ export default function Wishes({ guestName }: { guestName: string }) {
                   Belum ada pesan yang masuk. Jadilah yang pertama mengirim doa untuk pengantin!
                 </div>
               ) : (
-                <div className="space-y-5 max-h-[480px] overflow-y-auto pr-2">
+                <div className="space-y-5">
                   {wishes.map((wish) => (
                     <article key={wish.id} className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-gradient-to-br from-white via-zinc-50 to-rose-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                       <div className="flex items-center justify-between gap-3">
