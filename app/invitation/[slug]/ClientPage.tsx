@@ -7,6 +7,7 @@ import CoupleIntro from "@/components/CoupleIntro";
 import Story from "@/components/Story";
 import Event from "@/components/Event";
 import RSVPForm from "@/components/RSVPForm";
+import Wishes from "@/components/Wishes";
 import MusicPlayer from "@/components/MusicPlayer";
 import MusicControl from "@/components/MusicControl";
 
@@ -28,6 +29,7 @@ export default function ClientPage({ guestName }: { guestName: string }) {
         <Story />
         <Event />
         <RSVPForm guestName={guestName} />
+        <Wishes guestName={guestName} />
       </main>
     </>
   );

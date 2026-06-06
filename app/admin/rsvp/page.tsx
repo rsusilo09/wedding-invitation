@@ -1,11 +1,13 @@
-import { getAllRSVPs } from "@/lib/db";
+import { getAllRSVPs, getAllWishes } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default function RSVPAdminPage() {
   const rsvps = getAllRSVPs();
+  const wishes = getAllWishes();
   const attendingCount = rsvps.filter((row) => row.status === "attending").length;
   const notAttendingCount = rsvps.filter((row) => row.status === "not_attending").length;
+  const wishCount = wishes.length;
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -60,6 +62,38 @@ export default function RSVPAdminPage() {
             </table>
           </div>
         )}
+
+        <div className="mt-12 rounded-3xl border border-zinc-200 bg-zinc-50 p-6">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-pink-600">Wedding Wishes</p>
+              <h2 className="mt-3 text-2xl font-serif text-zinc-950">Guest wishes</h2>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">
+                Semua pesan doa dan harapan yang disimpan dari tamu undangan.
+              </p>
+            </div>
+            <div className="rounded-3xl border border-pink-200 bg-pink-50 p-5 text-center">
+              <p className="text-sm uppercase text-pink-700">Total Wishes</p>
+              <p className="mt-3 text-3xl font-semibold text-zinc-950">{wishCount}</p>
+            </div>
+          </div>
+
+          {wishCount === 0 ? (
+            <div className="rounded-3xl border border-dashed border-zinc-200 bg-white p-10 text-center text-zinc-600">
+              No guest wishes yet.
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {wishes.map((wish) => (
+                <div key={wish.id} className="rounded-3xl border border-zinc-200 bg-white p-5">
+                  <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">{wish.guestName}</p>
+                  <p className="mt-2 text-base text-zinc-900">{wish.message}</p>
+                  <p className="mt-3 text-xs text-zinc-500">{new Date(wish.createdAt).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
