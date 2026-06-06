@@ -133,7 +133,7 @@ export default function Wishes({ guestName }: { guestName: string }) {
                   Belum ada pesan yang masuk. Jadilah yang pertama mengirim doa untuk pengantin!
                 </div>
               ) : (
-                <div className="space-y-5 max-h-[640px] overflow-y-auto pr-2">
+                <div className="space-y-5 max-h-[480px] overflow-y-auto pr-2">
                   {wishes.map((wish) => (
                     <article key={wish.id} className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-gradient-to-br from-white via-zinc-50 to-rose-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                       <div className="flex items-center justify-between gap-3">
