@@ -10,12 +10,12 @@ export type CoupleConstants = {
 };
 
 export const couple: CoupleConstants = {
-  brideName: "Eunike Sari",
-  groomName: "Reinaldo Susilo",
-  brideInstagram: "https://instagram.com/eunike_sari",
-  groomInstagram: "https://instagram.com/reinaldo_susilo",
-  date: "June 12, 2026",
-  location: "Bali, Indonesia",
+  brideName: "Eunike Adabella",
+  groomName: "Reinaldo",
+  brideInstagram: "https://www.instagram.com/eunikea_19/",
+  groomInstagram: "https://www.instagram.com/rsusilo09/",
+  date: "December 19, 2026",
+  location: "Surabaya, Indonesia",
   brideImg: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
   groomImg: "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop",
 };

@@ -1,0 +1,25 @@
+{
+  "rsvps": [
+    {
+      "name": "Test",
+      "status": "attending",
+      "person": 2,
+      "id": "fe798e2d-f404-443e-b5bd-c422da4465bd",
+      "createdAt": "2026-06-06T10:37:17.945Z"
+    },
+    {
+      "name": "Test",
+      "status": "not_attending",
+      "person": 1,
+      "id": "8cd26007-e89d-49f7-a9b9-6ae4dd6bd48e",
+      "createdAt": "2026-06-06T10:37:51.310Z"
+    },
+    {
+      "name": "Rei",
+      "status": "attending",
+      "person": 2,
+      "id": "fe490485-a38a-4d09-b8e0-1444e2c7c4a0",
+      "createdAt": "2026-06-06T10:41:10.756Z"
+    }
+  ]
+}
