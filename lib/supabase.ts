@@ -4,10 +4,11 @@ let supabase: SupabaseClient | null = null;
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const schema = process.env.SUPABASE_SCHEMA || "public";
 
 if (url && key) {
   supabase = createClient(url, key, {
-    // use server-side options if needed
+    db: { schema },
   });
 }
 
