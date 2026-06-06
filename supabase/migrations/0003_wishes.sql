@@ -1,5 +1,5 @@
--- Create wishes table
-CREATE TABLE IF NOT EXISTS wishes (
+-- Create wishes table in married schema
+CREATE TABLE IF NOT EXISTS married.wishes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   guest_name text NOT NULL,
   message text NOT NULL,
@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS wishes (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_wishes_created_at ON wishes (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_married_wishes_created_at ON married.wishes (created_at DESC);
