@@ -20,15 +20,23 @@ function validatePayload(payload: unknown): payload is WishInput {
 
 export async function GET() {
   if (supabase) {
-    const tryTables = ["wishes", "Married.wishes"];
-    for (const table of tryTables) {
-      const { data, error } = await supabase.from(table).select("*").order("createdAt", { ascending: false });
-      if (!error) return NextResponse.json({ success: true, wishes: data ?? [], schema: table.includes(".") ? table.split(".")[0] : "public" });
+    const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
+    const tryConfigs = [
+      { table: "wishes", schema: "public" },
+      { table: "wishes", schema: configuredSchema },
+    ];
+    for (const entry of tryConfigs) {
+      const tableQuery = supabase.from(entry.table);
+      const query = entry.schema === "public"
+        ? tableQuery
+        : (tableQuery as any).schema(entry.schema);
+      const { data, error } = await query.select("*").order("createdAt", { ascending: false });
+      if (!error) return NextResponse.json({ success: true, wishes: data ?? [], schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
     }
-    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and configured schema)." }, { status: 500 });
   }
 
   const wishes = getAllWishes();
@@ -52,15 +60,23 @@ export async function POST(request: Request) {
       message: body.message,
       createdAt: now,
     };
-    const tryTables = ["wishes", "Married.wishes"];
-    for (const table of tryTables) {
-      const { data, error } = await supabase.from(table).insert([insert]).select().single();
-      if (!error) return NextResponse.json({ success: true, wish: data, schema: table.includes(".") ? table.split(".")[0] : "public" });
+    const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
+    const tryConfigs = [
+      { table: "wishes", schema: "public" },
+      { table: "wishes", schema: configuredSchema },
+    ];
+    for (const entry of tryConfigs) {
+      const tableQuery = supabase.from(entry.table);
+      const query = entry.schema === "public"
+        ? tableQuery
+        : (tableQuery as any).schema(entry.schema);
+      const { data, error } = await query.insert([insert]).select().single();
+      if (!error) return NextResponse.json({ success: true, wish: data, schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
     }
-    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and configured schema)." }, { status: 500 });
   }
 
   const saved = saveWish(body);

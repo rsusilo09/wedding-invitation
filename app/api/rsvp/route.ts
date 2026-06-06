@@ -22,17 +22,23 @@ function validatePayload(payload: unknown): payload is RSVPInput {
 
 export async function GET() {
   if (supabase) {
-    // Try public first, then Married schema fallback
-    const tryTables = ["rsvps", "Married.rsvps"];
-    for (const table of tryTables) {
-      const { data, error } = await supabase.from(table).select("*").order("createdAt", { ascending: false });
-      if (!error) return NextResponse.json({ success: true, rsvps: data ?? [], schema: table.includes(".") ? table.split(".")[0] : "public" });
-      // if table not found, continue
+    const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
+    const tryConfigs = [
+      { table: "rsvps", schema: "public" },
+      { table: "rsvps", schema: configuredSchema },
+    ];
+    for (const entry of tryConfigs) {
+      const tableQuery = supabase.from(entry.table);
+      const query = entry.schema === "public"
+        ? tableQuery
+        : (tableQuery as any).schema(entry.schema);
+      const { data, error } = await query.select("*").order("createdAt", { ascending: false });
+      if (!error) return NextResponse.json({ success: true, rsvps: data ?? [], schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
     }
-    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and configured schema)." }, { status: 500 });
   }
 
   const rsvps = getAllRSVPs();
@@ -57,15 +63,23 @@ export async function POST(request: Request) {
       person: body.person,
       createdAt: now,
     };
-    const tryTables = ["rsvps", "Married.rsvps"];
-    for (const table of tryTables) {
-      const { data, error } = await supabase.from(table).insert([insert]).select().single();
-      if (!error) return NextResponse.json({ success: true, rsvp: data, schema: table.includes(".") ? table.split(".")[0] : "public" });
+    const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
+    const tryConfigs = [
+      { table: "rsvps", schema: "public" },
+      { table: "rsvps", schema: configuredSchema },
+    ];
+    for (const entry of tryConfigs) {
+      const tableQuery = supabase.from(entry.table);
+      const query = entry.schema === "public"
+        ? tableQuery
+        : (tableQuery as any).schema(entry.schema);
+      const { data, error } = await query.insert([insert]).select().single();
+      if (!error) return NextResponse.json({ success: true, rsvp: data, schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
     }
-    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and configured schema)." }, { status: 500 });
   }
 
   const saved = saveRSVP(body);
