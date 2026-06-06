@@ -7,7 +7,7 @@ type WishData = {
   id: string;
   guestName: string;
   message: string;
-  createdAt: string;
+  created_at: string;
 };
 
 export default function Wishes({ guestName }: { guestName: string }) {
@@ -140,7 +140,7 @@ export default function Wishes({ guestName }: { guestName: string }) {
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-pink-600">{wish.guestName}</p>
-                          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-zinc-500">{new Date(wish.createdAt).toLocaleDateString()}</p>
+                          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-zinc-500">{new Date(wish.created_at).toLocaleDateString()}</p>
                         </div>
                         <span className="inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600 shadow-sm">
                           Wish

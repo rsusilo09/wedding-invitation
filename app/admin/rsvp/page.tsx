@@ -9,8 +9,8 @@ export default async function RSVPAdminPage() {
   const rsvpRes = await fetchAPI('/api/rsvp');
   const wishesRes = await fetchAPI('/api/wishes');
 
-  type RSVP = { id: string; name: string; status: string; person: number; createdAt: string };
-  type Wish = { id: string; guestName: string; message: string; createdAt: string };
+  type RSVP = { id: string; name: string; status: string; person: number; created_at: string };
+  type Wish = { id: string; guestName: string; message: string; created_at: string };
 
   const rsvps: RSVP[] = rsvpRes.success ? rsvpRes.rsvps : [];
   const wishes: Wish[] = wishesRes.success ? wishesRes.wishes : [];
@@ -65,7 +65,7 @@ export default async function RSVPAdminPage() {
                       {row.status.replace("_", " ")}
                     </td>
                     <td className="px-4 py-4">{row.person}</td>
-                    <td className="px-4 py-4 text-zinc-500">{new Date(row.createdAt).toLocaleString()}</td>
+                    <td className="px-4 py-4 text-zinc-500">{new Date(row.created_at).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -98,7 +98,7 @@ export default async function RSVPAdminPage() {
                 <div key={wish.id} className="rounded-3xl border border-zinc-200 bg-white p-5">
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">{wish.guestName}</p>
                   <p className="mt-2 text-base text-zinc-900">{wish.message}</p>
-                  <p className="mt-3 text-xs text-zinc-500">{new Date(wish.createdAt).toLocaleString()}</p>
+                  <p className="mt-3 text-xs text-zinc-500">{new Date(wish.created_at).toLocaleString()}</p>
                 </div>
               ))}
             </div>

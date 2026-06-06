@@ -31,7 +31,7 @@ export async function GET() {
       const query = entry.schema === "public"
         ? postgrest.from(entry.table)
         : postgrest.schema(entry.schema).from(entry.table);
-      const { data, error } = await query.select("*").order("createdAt", { ascending: false });
+      const { data, error } = await query.select("*").order("created_at", { ascending: false });
       if (!error) return NextResponse.json({ success: true, rsvps: data ?? [], schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       name: body.name,
       status: body.status,
       person: body.person,
-      createdAt: now,
+      created_at: now,
     };
     const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
     const tryConfigs = [

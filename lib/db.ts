@@ -10,14 +10,14 @@ export interface RSVPRecord {
   name: string;
   status: RSVPStatus;
   person: number;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface WishRecord {
   id: string;
   guestName: string;
   message: string;
-  createdAt: string;
+  created_at: string;
 }
 
 interface DatabaseSchema {
@@ -61,11 +61,11 @@ try {
   };
 }
 
-export function saveRSVP(record: Omit<RSVPRecord, "id" | "createdAt">) {
+export function saveRSVP(record: Omit<RSVPRecord, "id" | "created_at">) {
   const newRecord: RSVPRecord = {
     ...record,
     id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
   };
 
   db.data!.rsvps.push(newRecord);
@@ -79,14 +79,14 @@ export function saveRSVP(record: Omit<RSVPRecord, "id" | "createdAt">) {
 
 export function getAllRSVPs() {
   db.read();
-  return db.data!.rsvps.slice().sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  return db.data!.rsvps.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
 }
 
-export function saveWish(record: Omit<WishRecord, "id" | "createdAt">) {
+export function saveWish(record: Omit<WishRecord, "id" | "created_at">) {
   const newWish: WishRecord = {
     ...record,
     id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
   };
 
   db.data!.wishes.push(newWish);
@@ -96,5 +96,5 @@ export function saveWish(record: Omit<WishRecord, "id" | "createdAt">) {
 
 export function getAllWishes() {
   db.read();
-  return db.data!.wishes.slice().sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  return db.data!.wishes.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
 }
