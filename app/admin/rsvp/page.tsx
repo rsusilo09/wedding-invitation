@@ -1,12 +1,22 @@
-import { getAllRSVPs, getAllWishes } from "@/lib/db";
-
 export const dynamic = "force-dynamic";
 
-export default function RSVPAdminPage() {
-  const rsvps = getAllRSVPs();
-  const wishes = getAllWishes();
-  const attendingCount = rsvps.filter((row) => row.status === "attending").length;
-  const notAttendingCount = rsvps.filter((row) => row.status === "not_attending").length;
+async function fetchAPI(path: string) {
+  const res = await fetch(path, { cache: "no-store" });
+  return res.json();
+}
+
+export default async function RSVPAdminPage() {
+  const rsvpRes = await fetchAPI('/api/rsvp');
+  const wishesRes = await fetchAPI('/api/wishes');
+
+  type RSVP = { id: string; name: string; status: string; person: number; createdAt: string };
+  type Wish = { id: string; guestName: string; message: string; createdAt: string };
+
+  const rsvps: RSVP[] = rsvpRes.success ? rsvpRes.rsvps : [];
+  const wishes: Wish[] = wishesRes.success ? wishesRes.wishes : [];
+
+  const attendingCount = rsvps.filter((row: any) => row.status === "attending").length;
+  const notAttendingCount = rsvps.filter((row: any) => row.status === "not_attending").length;
   const wishCount = wishes.length;
 
   return (

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAllWishes, saveWish } from "@/lib/db";
+import supabase from "@/lib/supabase";
 
 interface WishInput {
   guestName: string;
@@ -18,6 +19,12 @@ function validatePayload(payload: unknown): payload is WishInput {
 }
 
 export async function GET() {
+  if (supabase) {
+    const { data, error } = await supabase.from("wishes").select("*").order("createdAt", { ascending: false });
+    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true, wishes: data ?? [] });
+  }
+
   const wishes = getAllWishes();
   return NextResponse.json({ success: true, wishes });
 }
@@ -30,6 +37,18 @@ export async function POST(request: Request) {
       { success: false, error: "Invalid wish payload." },
       { status: 400 }
     );
+  }
+
+  if (supabase) {
+    const now = new Date().toISOString();
+    const insert = {
+      guestName: body.guestName,
+      message: body.message,
+      createdAt: now,
+    };
+    const { data, error } = await supabase.from("wishes").insert([insert]).select().single();
+    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true, wish: data });
   }
 
   const saved = saveWish(body);

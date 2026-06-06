@@ -25,28 +25,40 @@ interface DatabaseSchema {
   wishes: WishRecord[];
 }
 
-const filePath = join(process.cwd(), "data", "rsvp.json");
-fs.mkdirSync(dirname(filePath), { recursive: true });
+let db: LowSync<DatabaseSchema> | { data: DatabaseSchema; read: () => void; write: () => void };
 
-const adapter = new JSONFileSync<DatabaseSchema>(filePath);
-const db = new LowSync<DatabaseSchema>(adapter, { rsvps: [], wishes: [] });
-db.read();
-if (!db.data) {
-  db.data = { rsvps: [], wishes: [] };
-  db.write();
-} else {
-  let needsWrite = false;
-  if (!Array.isArray(db.data.rsvps)) {
-    db.data.rsvps = [];
-    needsWrite = true;
-  }
-  if (!Array.isArray(db.data.wishes)) {
-    db.data.wishes = [];
-    needsWrite = true;
-  }
-  if (needsWrite) {
+try {
+  const filePath = join(process.cwd(), "data", "rsvp.json");
+  fs.mkdirSync(dirname(filePath), { recursive: true });
+
+  const adapter = new JSONFileSync<DatabaseSchema>(filePath);
+  db = new LowSync<DatabaseSchema>(adapter, { rsvps: [], wishes: [] });
+  db.read();
+  if (!db.data) {
+    db.data = { rsvps: [], wishes: [] };
     db.write();
+  } else {
+    let needsWrite = false;
+    if (!Array.isArray(db.data.rsvps)) {
+      db.data.rsvps = [];
+      needsWrite = true;
+    }
+    if (!Array.isArray(db.data.wishes)) {
+      db.data.wishes = [];
+      needsWrite = true;
+    }
+    if (needsWrite) db.write();
   }
+} catch (err) {
+  // Fallback to in-memory DB when filesystem is not writable (serverless hosts)
+  // This prevents runtime crashes; note: data won't persist across restarts.
+  // eslint-disable-next-line no-console
+  console.warn("lowdb file storage unavailable, using in-memory fallback:", err && (err as Error).message);
+  db = {
+    data: { rsvps: [], wishes: [] },
+    read: () => {},
+    write: () => {},
+  };
 }
 
 export function saveRSVP(record: Omit<RSVPRecord, "id" | "createdAt">) {
@@ -57,7 +69,11 @@ export function saveRSVP(record: Omit<RSVPRecord, "id" | "createdAt">) {
   };
 
   db.data!.rsvps.push(newRecord);
-  db.write();
+  try {
+    db.write();
+  } catch (e) {
+    // ignore write errors for in-memory fallback
+  }
   return newRecord;
 }
 
