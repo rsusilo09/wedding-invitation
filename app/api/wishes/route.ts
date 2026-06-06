@@ -20,9 +20,15 @@ function validatePayload(payload: unknown): payload is WishInput {
 
 export async function GET() {
   if (supabase) {
-    const { data, error } = await supabase.from("wishes").select("*").order("createdAt", { ascending: false });
-    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true, wishes: data ?? [] });
+    const tryTables = ["wishes", "Married.wishes"];
+    for (const table of tryTables) {
+      const { data, error } = await supabase.from(table).select("*").order("createdAt", { ascending: false });
+      if (!error) return NextResponse.json({ success: true, wishes: data ?? [], schema: table.includes(".") ? table.split(".")[0] : "public" });
+      if (!error.message?.toLowerCase().includes("could not find the table")) {
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      }
+    }
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
   }
 
   const wishes = getAllWishes();
@@ -46,9 +52,15 @@ export async function POST(request: Request) {
       message: body.message,
       createdAt: now,
     };
-    const { data, error } = await supabase.from("wishes").insert([insert]).select().single();
-    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true, wish: data });
+    const tryTables = ["wishes", "Married.wishes"];
+    for (const table of tryTables) {
+      const { data, error } = await supabase.from(table).insert([insert]).select().single();
+      if (!error) return NextResponse.json({ success: true, wish: data, schema: table.includes(".") ? table.split(".")[0] : "public" });
+      if (!error.message?.toLowerCase().includes("could not find the table")) {
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      }
+    }
+    return NextResponse.json({ success: false, error: "Tables not found in Supabase (checked public and Married)." }, { status: 500 });
   }
 
   const saved = saveWish(body);
