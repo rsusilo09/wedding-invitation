@@ -122,7 +122,7 @@ export default function Wishes({ guestName }: { guestName: string }) {
               </div>
             </div>
 
-            <div className="mt-6 flex-1 overflow-y-auto space-y-5 pr-2">
+            <div className="mt-6 flex-1 overflow-y-auto space-y-5 pr-2 max-h-[30rem]">
               {loading ? (
                 <div className="space-y-4">
                   {Array.from({ length: 3 }).map((_, index) => (
