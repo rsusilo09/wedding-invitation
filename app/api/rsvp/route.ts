@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAllRSVPs, saveRSVP, RSVPStatus } from "@/lib/db";
-import supabase from "@/lib/supabase";
+import { postgrest, default as supabase } from "@/lib/supabase";
 
 interface RSVPInput {
   name: string;
@@ -21,17 +21,17 @@ function validatePayload(payload: unknown): payload is RSVPInput {
 }
 
 export async function GET() {
-  if (supabase) {
+  if (supabase && postgrest) {
     const configuredSchema = process.env.SUPABASE_SCHEMA || "public";
     const tryConfigs = [
       { table: "rsvps", schema: "public" },
       { table: "rsvps", schema: configuredSchema },
     ];
     for (const entry of tryConfigs) {
-      const relation = entry.schema === "public"
-        ? entry.table
-        : `${entry.schema}.${entry.table}`;
-      const { data, error } = await supabase.from(relation).select("*").order("createdAt", { ascending: false });
+      const query = entry.schema === "public"
+        ? postgrest.from(entry.table)
+        : postgrest.schema(entry.schema).from(entry.table);
+      const { data, error } = await query.select("*").order("createdAt", { ascending: false });
       if (!error) return NextResponse.json({ success: true, rsvps: data ?? [], schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (supabase) {
+  if (supabase && postgrest) {
     const now = new Date().toISOString();
     const insert = {
       name: body.name,
@@ -68,10 +68,10 @@ export async function POST(request: Request) {
       { table: "rsvps", schema: configuredSchema },
     ];
     for (const entry of tryConfigs) {
-      const relation = entry.schema === "public"
-        ? entry.table
-        : `${entry.schema}.${entry.table}`;
-      const { data, error } = await supabase.from(relation).insert([insert]).select().single();
+      const query = entry.schema === "public"
+        ? postgrest.from(entry.table)
+        : postgrest.schema(entry.schema).from(entry.table);
+      const { data, error } = await query.insert([insert]).select().single();
       if (!error) return NextResponse.json({ success: true, rsvp: data, schema: entry.schema });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
