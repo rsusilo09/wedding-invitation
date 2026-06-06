@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import OpeningGate from "@/components/OpeningGate";
 import Hero from "@/components/Hero";
+import CoupleIntro from "@/components/CoupleIntro";
 import Story from "@/components/Story";
 import Event from "@/components/Event";
 import RSVPForm from "@/components/RSVPForm";
@@ -23,6 +24,7 @@ export default function ClientPage({ guestName }: { guestName: string }) {
 
       <main className="bg-white">
         <Hero guestName={guestName} />
+        <CoupleIntro />
         <Story />
         <Event />
         <RSVPForm guestName={guestName} />
