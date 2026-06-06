@@ -17,11 +17,10 @@ export async function GET() {
     ];
     const errors: Array<{ table: string; schema: string; message: string }> = [];
     for (const entry of tryConfigs) {
-      const tableQuery = supabase.from(entry.table);
-      const query = entry.schema === "public"
-        ? tableQuery
-        : (tableQuery as any).schema(entry.schema);
-      const { data, error } = await query.select("id").limit(1);
+      const relation = entry.schema === "public"
+        ? entry.table
+        : `${entry.schema}.${entry.table}`;
+      const { data, error } = await supabase.from(relation).select("id").limit(1);
       if (!error) return NextResponse.json({ hasUrl, hasKey, configuredSchema, connected: true, schema: entry.schema, sample: data ?? [] });
       errors.push({ table: entry.table, schema: entry.schema, message: error.message });
       if (!error.message?.toLowerCase().includes("could not find the table")) {
