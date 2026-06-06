@@ -1,5 +1,7 @@
 import { getAllRSVPs } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default function RSVPAdminPage() {
   const rsvps = getAllRSVPs();
   const attendingCount = rsvps.filter((row) => row.status === "attending").length;
