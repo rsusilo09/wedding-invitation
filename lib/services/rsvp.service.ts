@@ -1,6 +1,9 @@
+import type { RSVPStatus } from "@/lib/db";
+export type { RSVPStatus };
+
 export interface RSVPRequest {
   name: string;
-  status: "attending" | "not_attending" | string;
+  status: RSVPStatus;
   person: number;
 }
 
