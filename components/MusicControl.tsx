@@ -18,10 +18,9 @@ export default function MusicControl({
   return (
     <button
       onClick={toggleMusic}
-      className="fixed bottom-6 right-6 bg-white/20 backdrop-blur-lg px-4 py-3 rounded-full shadow-lg text-white"
-      style={{
-        zIndex: 9999
-      }}
+      aria-label="Toggle background music"
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-white/20 backdrop-blur-lg px-3 py-2 md:px-4 md:py-3 rounded-full shadow-lg text-white text-sm md:text-base"
+      style={{ zIndex: 9999 }}
     >
       🎵
     </button>
